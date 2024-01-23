@@ -146,7 +146,8 @@ async function callOllama(userResponse, ollamaModel, query) {
 
     const req = http.request(options, (res) => {
       res.on('data', (chunk) => {
-        let obj = JSON.parse(chunk);
+        let obj = JSON.parse(chunk)
+        console.log(obj.response)
         // Escriure a 'userResponse' el text rebut a 'obj.response'
       });
       res.on('end', () => {
