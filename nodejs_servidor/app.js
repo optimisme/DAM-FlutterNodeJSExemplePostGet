@@ -114,10 +114,10 @@ app.post('/data', upload.single('file'), async (req, res) => {
     // Modificar la següent funció 
     // await callOllama(res, "mistral", "Here is a story about llamas eating grass")
 
-    // El següent codi mostra com 'escriure' informació per l'usuari, cada 1 segon
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    // El següent codi mostra com 'escriure' informació per l'usuari, cada 1.5 segons
+    await new Promise(resolve => setTimeout(resolve, 1500))
     res.write("POST Second line\n")
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    await new Promise(resolve => setTimeout(resolve, 1500))
     res.write("POST Third line\n")
     res.end("")
   } else {
