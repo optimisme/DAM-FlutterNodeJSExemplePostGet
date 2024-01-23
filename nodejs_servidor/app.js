@@ -1,3 +1,4 @@
+const http = require('http');
 const express = require('express')
 const multer = require('multer');
 const url = require('url')
@@ -99,6 +100,8 @@ app.post('/data', upload.single('file'), async (req, res) => {
   // - 'conversa' que retornara una petició generada per 'mistral'
   // - 'imatge' que retornara la interpretació d'una imatge enviada a 'llava'
 
+
+
   if (objPost.type === 'test') {
     if (uploadedFile) {
       let fileContent = uploadedFile.buffer.toString('utf-8')
@@ -107,11 +110,55 @@ app.post('/data', upload.single('file'), async (req, res) => {
     }
     res.writeHead(200, { 'Content-Type': 'text/plain; charset=UTF-8' })
     res.write("POST First line\n")
+
+    // Modificar la següent funció 
+    // await callOllama(res, "mistral", "Here is a story about llamas eating grass")
+
     await new Promise(resolve => setTimeout(resolve, 1000))
     res.write("POST Second line\n")
     await new Promise(resolve => setTimeout(resolve, 1000))
-    res.end("POST Last line\n")
+    res.end("")
   } else {
     res.status(400).send('Sol·licitud incorrecta.')
   }
 })
+
+async function callOllama(userResponse, ollamaModel, query) {
+
+  return new Promise((resolve, reject) => {
+    const options = {
+      hostname: 'localhost',
+      port: 11434,
+      path: '/api/generate',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      rejectUnauthorized: false
+    }
+
+    const data = JSON.stringify({
+      model: ollamaModel,
+      prompt: query
+    })
+
+    const req = http.request(options, (res) => {
+      res.on('data', (chunk) => {
+        let obj = JSON.parse(chunk);
+        // Escriure a 'userResponse' el text rebut a 'obj.response'
+      });
+      res.on('end', () => {
+        console.log("done")
+        resolve()
+      })
+    })
+
+    req.on('error', (error) => {
+      console.error("Error en la sol·licitud: ", error)
+      reject(error)
+    })
+
+    req.write(data)
+    req.end()
+  })
+}
